@@ -13,7 +13,7 @@ Charges-(Allocated portion of the total annual charge from claims (portion from 
 
 Registration-
 Name, Address, date of birth, date of registration
-Maybe web service for address lookup (post code)
+Maybe web service for address lookup (post code and house number)
 
 Two statuses - provisional and full membership
 
@@ -30,6 +30,15 @@ If paid, they resume full membership
 
 5. List all claims and payments to date
 
+Variables
+Name, address, date of birth, date of registration
+Postcode and house number
+Boolean if Annual membership paid
+Membership status
+outstanding charges
+username and password
+if confirmed by admin
+counter for claims
 
 
 

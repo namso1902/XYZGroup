@@ -13,7 +13,7 @@ Charges-(Allocated portion of the total annual charge from claims (portion from 
 
 Registration-
 Name, Address, date of birth, date of registration
-Maybe web service for address lookup
+Maybe web service for address lookup (post code)
 
 Two statuses - provisional and full membership
 

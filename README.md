@@ -1,0 +1,29 @@
+# XYZGroup
+ESD assignment web project tasks:
+
+ESD tasks:
+
+Osman:
+- Structure
+- DB connection (jdbc) and DB script
+- Member and Admin class
+
+Wing: (useBean)<%useBean />
+- Member dashboard (.jsp)
+	- Make payment
+	- Check outstanding balance
+	- Submit claim
+	- List all claims
+	- List all payments
+- Admin dashboard (.jsp)
+- Member and Admin class
+
+Eren:
+- Summarize specification
+- Member and Admin class
+- Test cases
+- Commenting
+
+Mo, Jodrin:
+- Login and Registration pages (Web services address lookup)
+- Design research

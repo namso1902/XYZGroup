@@ -1,0 +1,23 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 14-Nov-2016, 14:36:54
+    Author     : namso1902
+*/
+
+.center {
+    line-height: 200px;
+    height: 200px;
+    border: 3px solid green;
+    text-align: center;
+}
+
+/* If the text has multiple lines, add the following: */
+.center p {
+    line-height: 1.5;
+    display: inline-block;
+    vertical-align: middle;
+}

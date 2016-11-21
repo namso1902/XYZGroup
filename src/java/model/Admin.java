@@ -11,15 +11,24 @@ package model;
  */
 public class Admin {
     
+    
     public void listAllMembers() {
         
     }
     
-    public void outstdBalances() {
+    public void listAllOutstdBalances() {
         
     }
     
     public void ListAllClaims() {
+        
+    }
+    
+    public void listTotalIncome() {
+        
+    }
+    
+    public void listTotalPayouts() {
         
     }
     
@@ -28,6 +37,10 @@ public class Admin {
     }
     
     public void resumeMembership() {
+        
+    }
+    
+    public void upgradeMembership() {
         
     }
 }

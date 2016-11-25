@@ -5,6 +5,8 @@
  */
 package model;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -17,23 +19,40 @@ import java.util.logging.Logger;
 public class Member {
 
     //class parameters (first commit)    
-    String firstName, lastName;
-    String address;
-    Date dob;
-    Date dateOfReg;
-    int balance;
+    private String id;
+    private String name;
+    private String address;
+    private Date dob;
+    private Date dor;
+    private int balance;
+    String status; //provisional (p), full (f), suspended (s) etc.
     boolean paymentMade;
-    Jdbc dbConn;
+    Jdbc dbConn = new Jdbc();
+    Connection con = dbConn.connect();
+    PreparedStatement pstmt;
+    //Username and Password
+    String username, password;
     
-
-    public Member(String firstName, String lastName, String address, Date dob, Date dateOfReg) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public Member(String id, String name, String address, Date dob, Date dor) {
+        this.id = id;
+        this.name = name;
         this.address = address;
         this.dob = dob;
-        this.dateOfReg = dateOfReg;
-        String sql_addMember = "INSERT INTO xyz_assoc  (ID,NAME,AGE,ADDRESS,SALARY)\n" +
-            "VALUES (1, 'Ramesh', 32, 'Ahmedabad', 2000.00 );";
+        this.dor = dor;
+        this.status = "applied";
+    }
+    
+    //add member to db
+    public void addMemberToDb() throws SQLException {
+        pstmt = con.prepareStatement("INSERT INTO members VALUES(?,?,?,?,?,?,?)");
+        pstmt.setString(1, id);
+        pstmt.setString(2, name);
+        pstmt.setString(3, address);
+        pstmt.setDate(4, new java.sql.Date(dob.getTime()));
+        pstmt.setDate(5, new java.sql.Date(dor.getTime()));
+        pstmt.setString(6, status);
+        pstmt.executeQuery();
+        con.close();
     }
     
     public int checkBalance() {
@@ -42,75 +61,57 @@ public class Member {
         return balance;
     }
     
-    public void makePayment() {
-        String sql_addPayment = "";
+    public void makePayment(String paymentType, float amount, Date d) throws SQLException {
+        pstmt = null;
+        pstmt = con.prepareStatement("INSERT INTO payments VALUES(?,?,?,?)");
+        pstmt.setString(2, id);
+        pstmt.setString(3, paymentType);
+        pstmt.setFloat(4, amount);
+        pstmt.setDate(5, new java.sql.Date(d.getTime()));
+        pstmt.executeQuery();
+        con.close();
     }
     
-    public void submitClaim() {
-        
+    public void submitClaim(String rationale, float claimAmount) throws SQLException {
+        //insert new claim into db (check claim can be made)
+        if ((status == "full") && (getResultSetSize(getAllClaims()) < 2) && 
+                (claimAmount < balance)) {
+            pstmt = con.prepareStatement("INSERT INTO claims VALUES(?,?,?,?,?,?,?)");
+            pstmt.setString(1, id);
+            pstmt.executeQuery();
+            con.close();
+        }
     }
     
-    public void listAllClaims() {
-        ResultSet claims;
-        String sql_get_claims = "";
+    public ResultSet getAllClaims() {
+        ResultSet claims = null; 
+        String sql_get_claims = "SELECT * FROM claims WHERE id = " + id;
         try {
             claims = dbConn.executeQuery(sql_get_claims);
         } catch (SQLException ex) {
             Logger.getLogger(Member.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return claims;
     }
     
-    public void listAllPayments() {
-        
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public Date getDob() {
-        return dob;
-    }
-
-    public void setDob(Date dob) {
-        this.dob = dob;
-    }
-
-    public Date getDateOfReg() {
-        return dateOfReg;
-    }
-
-    public void setDateOfReg(Date dateOfReg) {
-        this.dateOfReg = dateOfReg;
-    }
-
-    public int getBalance() {
-        return balance;
-    }
-
-    public void setBalance(int balance) {
-        this.balance = balance;
+    public ResultSet listAllPayments() {
+        ResultSet payments = null;
+        String sql_get_payments  = "SELECT * FROM payments WHERE id = " + id;
+        try {
+           payments = dbConn.executeQuery(sql_get_payments);
+        } catch (SQLException ex) {
+            Logger.getLogger(Member.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return payments;
     }
     
-    
+    public int getResultSetSize(ResultSet rs) throws SQLException {
+        int size = 0;
+        if (rs.last()) {
+            size = rs.getRow();
+            rs.beforeFirst();
+        }
+        return size;
+    }
+
 }

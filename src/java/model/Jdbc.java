@@ -32,7 +32,7 @@ public class Jdbc {
     }
     
     //open connection to database
-    public void connect(Connection con){
+    public Connection connect(){
         connection = null;
         String db = "xyz_assoc";
                 try {
@@ -46,6 +46,8 @@ public class Jdbc {
         catch (SQLException ex) {
             Logger.getLogger(Jdbc.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        return connection;
     }
     
     //execute mysql queryS

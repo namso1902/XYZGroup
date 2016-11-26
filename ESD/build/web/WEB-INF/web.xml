@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <filter>
+        <filter-name>UserLogin</filter-name>
+        <filter-class>controller.MemberFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>UserLogin</filter-name>
+        <servlet-name>MemberLogin</servlet-name>
+    </filter-mapping>
+    <servlet>
+        <servlet-name>ListAllMembers</servlet-name>
+        <servlet-class>controller.ListAllMembers</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>MemberLogin</servlet-name>
+        <servlet-class>controller.MemberDashboard</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ListAllMembers</servlet-name>
+        <url-pattern>/ListAllMembers</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MemberLogin</servlet-name>
+        <url-pattern>/MemberLogin.do</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+</web-app>

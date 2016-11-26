@@ -24,6 +24,14 @@
         <servlet-name>Registration</servlet-name>
         <servlet-class>web.Registration</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetClaims</servlet-name>
+        <servlet-class>web.GetClaims</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetPayments</servlet-name>
+        <servlet-class>web.GetPayments</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>AddMember</servlet-name>
         <url-pattern>/AddMember</url-pattern>
@@ -43,6 +51,14 @@
     <servlet-mapping>
         <servlet-name>Registration</servlet-name>
         <url-pattern>/Registration</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetClaims</servlet-name>
+        <url-pattern>/GetClaims</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetPayments</servlet-name>
+        <url-pattern>/GetPayments</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

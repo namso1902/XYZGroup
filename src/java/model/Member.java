@@ -42,7 +42,7 @@ public class Member {
         this.status = "applied";
     }
     
-    //add member to db
+    //add member to db (member table)
     public void addMemberToDb() throws SQLException {
         pstmt = con.prepareStatement("INSERT INTO members VALUES(?,?,?,?,?,?,?)");
         pstmt.setString(1, id);
@@ -55,10 +55,15 @@ public class Member {
         con.close();
     }
     
-    public int checkBalance() {
-        int balance = 0;
-        String sql_get_balance = "S";
-        return balance;
+    //add member username to user table
+    
+    public void updateBalance(float addAmount) throws SQLException {
+        balance += addAmount;
+        String sql_update_balance = "UPDATE members SET balance WHERE id = " + 
+                id;
+        dbConn.executeQuery(sql_update_balance);
+        dbConn.close();
+        //return balance;
     }
     
     public void makePayment(String paymentType, float amount, Date d) throws SQLException {
@@ -68,22 +73,30 @@ public class Member {
         pstmt.setString(3, paymentType);
         pstmt.setFloat(4, amount);
         pstmt.setDate(5, new java.sql.Date(d.getTime()));
+        //update balance
+        updateBalance(amount);
+        balance += amount;
         pstmt.executeQuery();
         con.close();
     }
     
-    public void submitClaim(String rationale, float claimAmount) throws SQLException {
+    public void submitClaim(Date d, String rationale, float claimAmount) throws SQLException {
         //insert new claim into db (check claim can be made)
-        if ((status == "full") && (getResultSetSize(getAllClaims()) < 2) && 
+        if ((status.matches("full")) && 
+                (getResultSetSize(getAllMemberClaims()) < 2) && 
                 (claimAmount < balance)) {
             pstmt = con.prepareStatement("INSERT INTO claims VALUES(?,?,?,?,?,?,?)");
             pstmt.setString(1, id);
+            pstmt.setDate(2, new java.sql.Date(d.getTime()));
+            pstmt.setString(3, rationale);
+            pstmt.setString(4, "full");
+            pstmt.setFloat(5, claimAmount);
             pstmt.executeQuery();
             con.close();
         }
     }
     
-    public ResultSet getAllClaims() {
+    public ResultSet getAllMemberClaims() {
         ResultSet claims = null; 
         String sql_get_claims = "SELECT * FROM claims WHERE id = " + id;
         try {
@@ -94,7 +107,7 @@ public class Member {
         return claims;
     }
     
-    public ResultSet listAllPayments() {
+    public ResultSet getAllPayments() {
         ResultSet payments = null;
         String sql_get_payments  = "SELECT * FROM payments WHERE id = " + id;
         try {

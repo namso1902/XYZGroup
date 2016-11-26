@@ -22,18 +22,12 @@ import java.util.logging.Logger;
 public class Jdbc {
     
     //db connection, statement and results
-    Connection connection = null;
-    Statement statement = null;
-    ResultSet rs = null;
+    Connection connection;
+    Statement statement;
+    ResultSet rs;
     //String query = null;
 
     public Jdbc() {
-        
-    }
-    
-    //open connection to database
-    public Connection connect(){
-        connection = null;
         String db = "xyz_assoc";
                 try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -46,7 +40,10 @@ public class Jdbc {
         catch (SQLException ex) {
             Logger.getLogger(Jdbc.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+    }
+    
+    //open connection to database
+    public Connection connect(){
         return connection;
     }
     

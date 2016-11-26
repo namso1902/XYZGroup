@@ -5,10 +5,13 @@
         <group>
             <file>file:/C:/Users/namso1902/Documents/NetBeansProjects/XYZGroup/web/WEB-INF/web.xml</file>
             <file>file:/C:/Users/namso1902/Documents/NetBeansProjects/XYZGroup/src/java/web/Registration.java</file>
+            <file>file:/C:/Users/namso1902/Documents/NetBeansProjects/XYZGroup/src/java/model/Jdbc.java</file>
             <file>file:/C:/Users/namso1902/Documents/NetBeansProjects/XYZGroup/src/java/model/Claim.java</file>
             <file>file:/C:/Users/namso1902/Documents/NetBeansProjects/XYZGroup/src/java/model/Member.java</file>
             <file>file:/C:/Users/namso1902/Documents/NetBeansProjects/XYZGroup/src/java/model/MemberManager.java</file>
+            <file>file:/C:/Users/namso1902/Documents/NetBeansProjects/XYZGroup/src/java/model/Registration.java</file>
             <file>file:/C:/Users/namso1902/Documents/NetBeansProjects/XYZGroup/web/m_dashboard.jsp</file>
+            <file>file:/C:/Users/namso1902/Documents/NetBeansProjects/XYZGroup/src/java/model/Admin.java</file>
         </group>
     </open-files>
 </project-private>

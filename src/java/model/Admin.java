@@ -19,8 +19,12 @@ import java.util.logging.Logger;
  */
 public class Admin {
     
+    //Status constants
+    public static final String approved = "APPROVED";
+    public static final String applied = "APPLIED";
+    public static final String suspended = "SUSPENDED";
     //Members array
-    ArrayList<Member> mbs = new ArrayList<Member>();
+    //ArrayList<Member> mbs = new ArrayList<Member>();
     //login details
     String username, password;
     String status;
@@ -42,18 +46,40 @@ public class Admin {
         pstmt.setString(3, status);
     }
     
-    public Member getMember(String name) {
-        Member m = null;
-        return m;
+    public ResultSet getMember(String name) {
+        ResultSet getMember = null;
+        String sql_get_member = "SELECT * FROM members WHERE name = " + name;
+        try {
+            getMember = dbConn.executeQuery(sql_get_member);
+        } catch (SQLException ex) {
+            Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return getMember;
     }
     
-    public void getAllMembers() {
+    
+    public ResultSet getAllMembers() {
         ResultSet members = null;
-        String sql_get_all_claims = "SELECT * FROM claims";
+        String sql_get_all_members = "SELECT * FROM members";
+        try {
+            members = dbConn.executeQuery(sql_get_all_members);
+        } catch (SQLException ex) {
+            Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return members;
     }
     
-    public void listAllOutstdBalances() {
-        
+    //get all outstanding approvals
+     public ResultSet getAllOutstdClaims() {
+        ResultSet oustandingBalances = null;
+        String sql_outstanding_balances = "SELECT * FROM claims WHERE "
+                + "status = APPLIED";
+        try {
+            oustandingBalances = dbConn.executeQuery(sql_outstanding_balances);
+        } catch (SQLException ex) {
+            Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return oustandingBalances;
     }
     
     public ResultSet gettAllClaims() {
@@ -67,20 +93,114 @@ public class Admin {
         return claims;
     }
     
-    public void listTotalIncome() {
-        
+    public ResultSet getTotalIncome() {
+        ResultSet totalIncome = null;
+        String sql_get_total_income = "SELECT SUM(amount) FROM payments";
+        try {
+            totalIncome = dbConn.executeQuery(sql_get_total_income);
+        } catch (SQLException ex) {
+            Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return totalIncome;
     }
     
-    public void listTotalPayouts() {
-        
+    public ResultSet gettTotalPayouts() {
+        ResultSet totalPayouts = null;
+        String sql_get_total_payouts = "SELECT SUM(amount) FROM claims WHERE "
+                + "status = APPROVED";
+        try {
+            totalPayouts = dbConn.executeQuery(sql_get_total_payouts);
+        } catch (SQLException ex) {
+            Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return totalPayouts;
     }
     
-    public void suspendMembership() {
+    //Approve claim - APPROVED/REJECTED
+    public boolean assessClaim(String id) throws SQLException {
+        //Get all member claims
+        ResultSet member_claims = null;
+        boolean approveClaim = false;
+        String sql_update_claim;
+        String status;
+        String sql_get_all_member_claims = "SELECT * FROM claims WHERE id = " + 
+                id;
+        try {
+            member_claims = dbConn.executeQuery(sql_get_all_member_claims);
+        } catch (SQLException ex) {
+            Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
+        //Get user status via id
+        String sql_get_status = "SELECT status FROM users WHERE id = " + id;
+        ResultSet userStatus = dbConn.executeQuery(sql_get_status);
+        status = userStatus.getString(1);
+        //approve or reject claim. Conditions: less than 2 claims, full member
+        if ((getResultSetSize(member_claims) < 2) && 
+                (status.matches(approved))) {
+            //approve claim status
+            sql_update_claim = "UPDATE claim SET status = APPROVED" +   
+            " WHERE id = " + id;
+            approveClaim = true;
+        }
+        else {
+            //reject claim status
+            sql_update_claim = "UPDATE claim SET status = REJECTED" +   
+            " WHERE id = " + id;
+            approveClaim = false;
+        }
+        
+        dbConn.executeQuery(sql_update_claim);
+        return approveClaim;
+    }
+    
+    
+    
+    public void chargeMember(String id) throws SQLException {
+        //change status in users table to 'APPROVED'
+        float balance = 0;
+        String sql_get_user = "SELECT status FROM users WHERE id = " + id;
+        ResultSet user = dbConn.executeQuery(sql_get_user);
+        //Get the members balance.
+        String sql_get_balance = "SELECT balance FROM members WHERE id = " + id;
+        ResultSet rs_balance = dbConn.executeQuery(sql_get_balance);
+        balance = rs_balance.getFloat(1);
+        if (balance < 10) {
+            suspendMembership(id);
+        }
+        else {
+            approveMembership(id);
+        }
+    } 
+    
+    //change status field to 'suspended'
+    public void suspendMembership(String id) {
+        String sql_suspend_member = "UPDATE users SET status = SUSPENDED" +   
+            " WHERE id = " + id;
+        try {
+            dbConn.executeQuery(sql_suspend_member);
+        } catch (SQLException ex) {
+            Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     //change membership from suspended/applied to approved.
-    public void approveMembership() {
-        
+    public void approveMembership(String id) {
+        String sql_suspend_member = "UPDATE users SET status = APPROVED" +   
+            " WHERE id = " + id;
+        try {
+            dbConn.executeQuery(sql_suspend_member);
+        } catch (SQLException ex) {
+            Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public int getResultSetSize(ResultSet rs) throws SQLException {
+        int size = 0;
+        if (rs.last()) {
+            size = rs.getRow();
+            rs.beforeFirst();
+        }
+        return size;
     }
 }

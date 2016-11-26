@@ -32,6 +32,10 @@
         <servlet-name>GetPayments</servlet-name>
         <servlet-class>web.GetPayments</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ChangePassword</servlet-name>
+        <servlet-class>web.ChangePassword</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>AddMember</servlet-name>
         <url-pattern>/AddMember</url-pattern>
@@ -59,6 +63,10 @@
     <servlet-mapping>
         <servlet-name>GetPayments</servlet-name>
         <url-pattern>/GetPayments</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ChangePassword</servlet-name>
+        <url-pattern>/ChangePassword</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

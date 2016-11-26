@@ -39,7 +39,8 @@ public class Member {
         this.address = address;
         this.dob = dob;
         this.dor = dor;
-        this.status = "applied";
+        this.status = "APPLIED";
+        this.password = MemberManager.generatePassword(dob);
     }
     
     //add member to db (member table)
@@ -55,12 +56,11 @@ public class Member {
         con.close();
     }
     
-    //add member username to user table
-    
+    //subract payment from balance
     public void updateBalance(float addAmount) throws SQLException {
         balance += addAmount;
-        String sql_update_balance = "UPDATE members SET balance WHERE id = " + 
-                id;
+        String sql_update_balance = "UPDATE members SET balance = " + balance  
+                + " WHERE id = " + id;
         dbConn.executeQuery(sql_update_balance);
         dbConn.close();
         //return balance;
@@ -82,18 +82,14 @@ public class Member {
     
     public void submitClaim(Date d, String rationale, float claimAmount) throws SQLException {
         //insert new claim into db (check claim can be made)
-        if ((status.matches("full")) && 
-                (getResultSetSize(getAllMemberClaims()) < 2) && 
-                (claimAmount < balance)) {
-            pstmt = con.prepareStatement("INSERT INTO claims VALUES(?,?,?,?,?,?,?)");
-            pstmt.setString(1, id);
-            pstmt.setDate(2, new java.sql.Date(d.getTime()));
-            pstmt.setString(3, rationale);
-            pstmt.setString(4, "full");
-            pstmt.setFloat(5, claimAmount);
-            pstmt.executeQuery();
-            con.close();
-        }
+        pstmt = con.prepareStatement("INSERT INTO claims VALUES(?,?,?,?,?,?,?)");
+        pstmt.setString(1, id);
+        pstmt.setDate(2, new java.sql.Date(d.getTime()));
+        pstmt.setString(3, rationale);
+        pstmt.setString(4, "SUBMITTED");
+        pstmt.setFloat(5, claimAmount);
+        pstmt.executeQuery();
+        con.close();
     }
     
     public ResultSet getAllMemberClaims() {
@@ -116,15 +112,6 @@ public class Member {
             Logger.getLogger(Member.class.getName()).log(Level.SEVERE, null, ex);
         }
         return payments;
-    }
-    
-    public int getResultSetSize(ResultSet rs) throws SQLException {
-        int size = 0;
-        if (rs.last()) {
-            size = rs.getRow();
-            rs.beforeFirst();
-        }
-        return size;
     }
 
 }

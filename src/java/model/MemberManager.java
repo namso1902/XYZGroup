@@ -27,18 +27,20 @@ public class MemberManager {
     }
     
     //Check the users login details
-    public static int checkLogin(String username, String password) {
+    public static ResultSet checkLogin(String username, String password) throws SQLException {
         int correct= 0; //
         Jdbc dbConn = new Jdbc();
         Connection con = dbConn.connect();
+        //boolean passwordCheck = false;
+        ResultSet rs = null;
         String sql_userName = "SELECT * FROM users WHERE id = " + username;
         try {
-            ResultSet rs = dbConn.executeQuery(sql_userName);
+            rs = dbConn.executeQuery(sql_userName);
         } catch (SQLException ex) {
             Logger.getLogger(MemberManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        return correct;
+        //check that username exists
+        return rs;
     }
     
 }

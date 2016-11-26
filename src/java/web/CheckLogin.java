@@ -7,10 +7,14 @@ package web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.MemberManager;
 
 /**
  *
@@ -74,6 +78,17 @@ public class CheckLogin extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        try {
+            if (MemberManager.checkLogin(username, password) == null) {
+                request.setAttribute("Error", "User not found, please try "
+                        + "again");
+            }
+        } 
+        catch (SQLException ex) {
+            Logger.getLogger(CheckLogin.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

@@ -3,28 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package web;
+package web.memberServlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.websocket.Session;
-import model.MemberManager;
+import model.Member;
 
 /**
  *
  * @author namso1902
  */
-public class CheckLogin extends HttpServlet {
+public class GetClaims extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -44,10 +39,10 @@ public class CheckLogin extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet CheckLogin</title>");            
+            out.println("<title>Servlet GetClaims</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet CheckLogin at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet GetClaims at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         } finally {
@@ -67,7 +62,16 @@ public class CheckLogin extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        //String userId = application.
+        //Get the member claims
+        String userId = "";
+        ResultSet rs_claims = Member.getAllMemberClaims(userId);
+        RequestDispatcher claims_list;
+        request.setAttribute("payments", rs_claims);
+        claims_list = request.getRequestDispatcher("/Web Pages/member_claims"
+                + ".jsp");
+        claims_list.forward(request, response);
+        //Forward member claims to the claims jsp
     }
 
     /**
@@ -81,38 +85,7 @@ public class CheckLogin extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        //set a session of 20 mins
-        session.setMaxInactiveInterval(20*60);
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        ResultSet login = null;
-        RequestDispatcher dashboard = null;
-        try {
-            login = MemberManager.checkLogin(username, password);
-            if (login == null) {
-                request.setAttribute("Error", "User not found, please try "
-                        + "again");
-            } 
-            else {
-                //Get the user status (Member/Admin)
-                String status = login.getString("status");
-                if (status.matches("MEMBER")) {
-                    //link to member dashboard
-                    request.setAttribute("member", login);
-                    dashboard = request.getRequestDispatcher("m_dashboard.jsp");
-                    dashboard.forward(request, response);
-                }
-                else {
-                    //link to admin dashboard b
-                    request.setAttribute("admin", login);
-                    dashboard = request.getRequestDispatcher("a_dashboard.jsp");
-                }   dashboard.forward(request, response);
-            }
-        } 
-        catch (SQLException ex) { 
-            Logger.getLogger(CheckLogin.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        processRequest(request, response);
     }
 
     /**

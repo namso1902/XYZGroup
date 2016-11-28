@@ -3,20 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package web;
+package web.adminServlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.ResultSet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Admin;
 
 /**
  *
  * @author namso1902
  */
-public class SuspendMember extends HttpServlet {
+public class GetAllMembers extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,10 +38,10 @@ public class SuspendMember extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet SuspendMember</title>");            
+            out.println("<title>Servlet GetAllMembers</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet SuspendMember at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet GetAllMembers at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         } finally {
@@ -60,6 +62,9 @@ public class SuspendMember extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+        ResultSet rs_members;
+        rs_members = Admin.getAllMembers();
+        //result dispatcher
     }
 
     /**

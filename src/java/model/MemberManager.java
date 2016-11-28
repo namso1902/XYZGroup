@@ -8,9 +8,12 @@ package model;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.Format;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,6 +44,31 @@ public class MemberManager {
         }
         //check that username exists
         return rs;
+    }
+    
+    public static Date getCurrentDate() {
+        DateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
+        Date date = new Date();
+        return date;
+    }
+    
+    public static Date StringToDate(String strDate) {
+        Date date = null;
+        DateFormat format = new SimpleDateFormat("dd-mm-yyyy", Locale.ENGLISH);
+        try {
+            date = format.parse(strDate);
+        } catch (ParseException ex) {
+            Logger.getLogger(MemberManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return date;
+    }
+    
+    //Get a member
+    public ResultSet getMember(String userId) {
+        ResultSet member = null;
+        String sql_get_member = "SELECT * FROM members WHERE id = " + userId;
+        
+        return member;
     }
     
 }

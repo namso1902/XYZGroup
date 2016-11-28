@@ -1,6 +1,6 @@
 <%-- 
-    Document   : admin_login
-    Created on : 31-Oct-2016, 14:34:38
+    Document   : get_total_payouts
+    Created on : 28-Nov-2016, 01:19:35
     Author     : namso1902
 --%>
 
@@ -12,10 +12,6 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Admin Login</h1>
-        <!--Login fields-->
-        <input name="login"/>
-        <input name="password"/>
-        <input type="submit" value="login"/>
+        <h1>Hello World!</h1>
     </body>
 </html>

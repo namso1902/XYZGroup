@@ -46,7 +46,9 @@ public class Admin {
         pstmt.setString(3, status);
     }
     
-    public ResultSet getMember(String name) {
+    public static ResultSet getMember(String name) {
+        Jdbc dbConn = new Jdbc();
+        Connection con = dbConn.connect();
         ResultSet getMember = null;
         String sql_get_member = "SELECT * FROM members WHERE name = " + name;
         try {
@@ -58,7 +60,9 @@ public class Admin {
     }
     
     
-    public ResultSet getAllMembers() {
+    public static ResultSet getAllMembers() {
+        Jdbc dbConn = new Jdbc();
+        Connection con = dbConn.connect();
         ResultSet members = null;
         String sql_get_all_members = "SELECT * FROM members";
         try {
@@ -93,7 +97,9 @@ public class Admin {
         return claims;
     }
     
-    public ResultSet getTotalIncome() {
+    public static ResultSet getTotalIncome() throws SQLException {
+        Jdbc dbConn = new Jdbc();
+        Connection con = dbConn.connect();
         ResultSet totalIncome = null;
         String sql_get_total_income = "SELECT SUM(amount) FROM payments";
         try {
@@ -101,10 +107,13 @@ public class Admin {
         } catch (SQLException ex) {
             Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
         }
+        dbConn.close();
         return totalIncome;
     }
     
-    public ResultSet gettTotalPayouts() {
+    public static ResultSet gettTotalPayouts() throws SQLException {
+        Jdbc dbConn = new Jdbc();
+        Connection con = dbConn.connect();
         ResultSet totalPayouts = null;
         String sql_get_total_payouts = "SELECT SUM(amount) FROM claims WHERE "
                 + "status = APPROVED";
@@ -113,7 +122,15 @@ public class Admin {
         } catch (SQLException ex) {
             Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
         }
+        dbConn.close();
         return totalPayouts;
+    }
+    
+    //Return annual charge for each member
+    public static ResultSet getAllMembersCharge() {
+        Jdbc dbConn = new Jdbc();
+        Connection con = dbConn.connect();
+        ResultSet rs_totalPayouts = gettTotalPayouts();
     }
     
     //Approve claim - APPROVED/REJECTED
@@ -174,7 +191,9 @@ public class Admin {
     } 
     
     //change status field to 'suspended'
-    public void suspendMembership(String id) {
+    public static void suspendMembership(String id) throws SQLException {
+        Jdbc dbConn = new Jdbc();
+        Connection con = dbConn.connect();
         String sql_suspend_member = "UPDATE users SET status = SUSPENDED" +   
             " WHERE id = " + id;
         try {
@@ -182,6 +201,7 @@ public class Admin {
         } catch (SQLException ex) {
             Logger.getLogger(Admin.class.getName()).log(Level.SEVERE, null, ex);
         }
+        dbConn.close();
     }
     
     //change membership from suspended/applied to approved.

@@ -3,22 +3,29 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package web;
+package web.memberServlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Claim;
+import model.Member;
+import model.MemberManager;
 
 /**
  *
  * @author namso1902
  */
-@WebServlet(name = "DeleteMember", urlPatterns = {"/DeleteMember"})
-public class DeleteMember extends HttpServlet {
+public class MakeClaim extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +45,10 @@ public class DeleteMember extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet DeleteMember</title>");            
+            out.println("<title>Servlet MakeClaim</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet DeleteMember at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet MakeClaim at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         } finally {
@@ -75,7 +82,23 @@ public class DeleteMember extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String userId = "";
+        RequestDispatcher rd_claims;
+        Date claim_date = MemberManager.getCurrentDate();
+        String rationale = request.getParameter("rationale");
+        String status = request.getParameter("status");
+        float amount = Float.valueOf(request.getParameter("amount"));
+        try {
+                Member.submitClaim(userId, claim_date, rationale, amount);
+                    } catch (SQLException ex) {
+            Logger.getLogger(MakeClaim.class.getName()).
+                     log(Level.SEVERE, null, ex);
+        }
+        Claim c = new Claim(userId, claim_date, rationale, status, amount);
+        request.setAttribute("claim", c);
+        rd_claims = request.getRequestDispatcher("/Web Pages/member_payments"
+                + ".jsp");
+        rd_claims.forward(request, response);
     }
 
     /**

@@ -1,6 +1,6 @@
 <%-- 
-    Document   : a_dashboard
-    Created on : 16-Nov-2016, 23:02:41
+    Document   : member_payments
+    Created on : 27-Nov-2016, 18:28:15
     Author     : namso1902
 --%>
 
@@ -9,9 +9,9 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Display all the members payments</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <h1>Your Payments</h1>
     </body>
 </html>

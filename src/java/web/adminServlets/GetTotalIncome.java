@@ -3,20 +3,25 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package web;
+package web.adminServlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.Admin;
 
 /**
  *
  * @author namso1902
  */
-public class GetClaims extends HttpServlet {
+public class GetTotalIncome extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,10 +41,10 @@ public class GetClaims extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet GetClaims</title>");            
+            out.println("<title>Servlet GetTotalIncome</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet GetClaims at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet GetTotalIncome at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         } finally {
@@ -59,7 +64,12 @@ public class GetClaims extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            ResultSet rs_totalIncome = Admin.getTotalIncome();
+        } catch (SQLException ex) {
+            Logger.getLogger(GetTotalIncome.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //Send result to total income display page
     }
 
     /**

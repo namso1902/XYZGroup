@@ -24,27 +24,27 @@ public class Member {
     private String address;
     private Date dob;
     private Date dor;
-    private int balance;
     String status; //provisional (p), full (f), suspended (s) etc.
     boolean paymentMade;
-    Jdbc dbConn = new Jdbc();
-    Connection con = dbConn.connect();
     PreparedStatement pstmt;
     //Username and Password
     String username, password;
     
-    public Member(String id, String name, String address, Date dob, Date dor) {
+    public Member(String id, String name, String address, Date dob) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.dob = dob;
-        this.dor = dor;
+        this.dor = MemberManager.getCurrentDate();
         this.status = "APPLIED";
         this.password = MemberManager.generatePassword(dob);
     }
     
     //add member to db (member table)
-    public void addMemberToDb() throws SQLException {
+    public static void addMember(String id, String name, String address, 
+            Date dob) throws SQLException {
+        Jdbc dbConn = new Jdbc();
+        Connection con = dbConn.connect();
         pstmt = con.prepareStatement("INSERT INTO members VALUES(?,?,?,?,?,?,?)");
         pstmt.setString(1, id);
         pstmt.setString(2, name);
@@ -57,57 +57,75 @@ public class Member {
     }
     
     //subract payment from balance
-    public void updateBalance(float addAmount) throws SQLException {
+    public static void updateBalance(String userId, float addAmount) 
+            throws SQLException {
+        //Get current balance and add in payment. Then update with new balance. 
+        Jdbc dbConn = new Jdbc();
+        Connection con = dbConn.connect();
+        String sql_get_balance = "SELECT balance FROM members WHERE id = " + 
+                userId;
+        float balance = dbConn.executeQuery(sql_get_balance).
+                getFloat("balance");
         balance += addAmount;
         String sql_update_balance = "UPDATE members SET balance = " + balance  
-                + " WHERE id = " + id;
+                + " WHERE id = " + userId;
         dbConn.executeQuery(sql_update_balance);
         dbConn.close();
         //return balance;
     }
     
-    public void makePayment(String paymentType, float amount, Date d) throws SQLException {
-        pstmt = null;
+    public static void makePayment(String userId, String paymentType, float amount, Date d) throws SQLException {
+        Jdbc dbConn = new Jdbc();
+        Connection con = dbConn.connect();
+        PreparedStatement pstmt;
         pstmt = con.prepareStatement("INSERT INTO payments VALUES(?,?,?,?)");
-        pstmt.setString(2, id);
+        pstmt.setString(2, userId);
         pstmt.setString(3, paymentType);
         pstmt.setFloat(4, amount);
         pstmt.setDate(5, new java.sql.Date(d.getTime()));
         //update balance
-        updateBalance(amount);
-        balance += amount;
+        updateBalance(userId, amount);
         pstmt.executeQuery();
         con.close();
     }
     
-    public void submitClaim(Date d, String rationale, float claimAmount) throws SQLException {
+    public static void submitClaim(String userId, Date d, String rationale, float claimAmount) throws SQLException {
         //insert new claim into db (check claim can be made)
+        Jdbc dbConn = new Jdbc();
+        Connection con = dbConn.connect();
+        PreparedStatement pstmt;
         pstmt = con.prepareStatement("INSERT INTO claims VALUES(?,?,?,?,?,?,?)");
-        pstmt.setString(1, id);
+        pstmt.setString(1, userId);
         pstmt.setDate(2, new java.sql.Date(d.getTime()));
         pstmt.setString(3, rationale);
         pstmt.setString(4, "SUBMITTED");
         pstmt.setFloat(5, claimAmount);
         pstmt.executeQuery();
-        con.close();
+        dbConn.close();
     }
     
-    public ResultSet getAllMemberClaims() {
+    public static ResultSet getAllMemberClaims(String userId) {
+        Jdbc dbConn = new Jdbc();
+        Connection con = dbConn.connect();
         ResultSet claims = null; 
-        String sql_get_claims = "SELECT * FROM claims WHERE id = " + id;
+        String sql_get_claims = "SELECT * FROM claims WHERE id = " + userId;
         try {
             claims = dbConn.executeQuery(sql_get_claims);
+            dbConn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Member.class.getName()).log(Level.SEVERE, null, ex);
         }
         return claims;
     }
     
-    public ResultSet getAllPayments() {
+    public static ResultSet getAllPayments(String userId) {
+        Jdbc dbConn = new Jdbc();
+        Connection con = dbConn.connect();
         ResultSet payments = null;
-        String sql_get_payments  = "SELECT * FROM payments WHERE id = " + id;
+        String sql_get_payments  = "SELECT * FROM payments WHERE id = " + userId;
         try {
            payments = dbConn.executeQuery(sql_get_payments);
+           dbConn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Member.class.getName()).log(Level.SEVERE, null, ex);
         }

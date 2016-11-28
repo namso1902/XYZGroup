@@ -1,6 +1,6 @@
 <%-- 
-    Document   : m_dashboard
-    Created on : 16-Nov-2016, 23:03:12
+    Document   : member_claims
+    Created on : 27-Nov-2016, 16:11:36
     Author     : namso1902
 --%>
 
@@ -9,9 +9,9 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Dashboard for XYZ Members</title>
+        <title>JSP Page</title>
     </head>
     <body>
-        <h1>Member Dashboard: </h1>
+        <h1>Hello World!</h1>
     </body>
 </html>

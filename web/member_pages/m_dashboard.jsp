@@ -32,7 +32,30 @@
     </div>
     <!--Submit claim-->
     <div>
-        
+        <form method="GET" action="/MakeClaim">
+        <intput name="submitClaim" type="submit"/>
+    </div>
+    
+    <div>
+        <form method="GET" action="/getPayments">
+            <input name="getPayments" type="submit"/>
+        </form>
+    </div>
+    
+    <div>
+        <form method="GET" action="/makePayment">
+            <input name="makePayments" type="submit"/>
+        </form>
+    </div>
+    
+    <div>
+        <form method="GET" action="Registration">
+            <input name="Registration" type="submit"/>
+        </form>
+    </div>
+    
+    
+    </form>
     </div>
     <!--List all claims-->       
     <form method= action="/GetClaims">
@@ -53,5 +76,7 @@
               rs_claims.getFloat("amount")
           }
         %>
+        
+        
     </body>
 </html>
